@@ -1,7 +1,12 @@
 **/node_modules/
 
+**/dist
+**/build
+**/out
+
+**/.next
+
 **.env
 **.env.*
 
-**/dist
-**/build
+**.pem
