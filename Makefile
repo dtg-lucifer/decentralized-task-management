@@ -5,3 +5,7 @@ run-F:
 .PHONY: run-B
 run-B:
 	@cd backend && npm run dev
+
+.PHONY: deploy-contract
+deploy-contract:
+	@cd blockchain && npm run deploy

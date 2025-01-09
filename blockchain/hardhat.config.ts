@@ -10,6 +10,7 @@ const config: HardhatUserConfig = {
     localganache: {
       url: process.env.PROVIDER_URL,
       accounts: [process.env.ACCOUNT_PRIVATE_KEY!],
+      chainId: 1337,
     },
   },
 };
