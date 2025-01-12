@@ -4,7 +4,6 @@ import { WalletIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
-import { useSDK } from "@metamask/sdk-react";
 import { formatAddress } from "@/lib/utils";
 import {
   Popover,
@@ -12,42 +11,46 @@ import {
   PopoverContent,
 } from "@/components/ui/popover";
 
+import { useMetamask } from "@/hooks/useMetamask";
+import { WalletAvatar } from "./wallet-avatar";
+
 export const ConnectWalletButton = () => {
-  const { sdk, connected, connecting, account } = useSDK();
+  const { connect, connected, disconnect, loading, account } = useMetamask();
 
-  const connect = async () => {
-    try {
-      await sdk?.connect();
-    } catch (err) {
-      console.warn(`No accounts found`, err);
-    }
-  };
-
-  const disconnect = () => {
-    if (sdk) {
-      sdk.terminate();
-    }
-  };
+  // TODO: make it look more cleaner
+  // TODO: improve the functionalities, i.e. add more options apart from just disconnecting, such as viewing the wallet address, etc.
 
   return (
     <div className="relative">
       {connected ? (
         <Popover>
-          <PopoverTrigger>
-            <Button>{formatAddress(account)}</Button>
+          <PopoverTrigger
+            asChild
+            className="flex justify-center items-center gap-2 bg-foreground px-2 rounded-md max-w-fit cursor-pointer"
+          >
+            <div>
+              <WalletAvatar address={account!.address!} size={25} />
+              <Button
+                variant={"ghost"}
+                className="bg-foreground hover:bg-transparent text-background hover:text-none"
+              >
+                {formatAddress(account?.address)}
+              </Button>
+            </div>
           </PopoverTrigger>
-          <PopoverContent className="top-10 right-0 z-10 bg-gray-100 shadow-lg mt-2 border rounded-md w-44">
-            <button
+          <PopoverContent className="top-10 right-0 z-10 shadow-lg mt-2 p-0 border rounded-md max-w-fit overflow-hidden">
+            <span
               onClick={disconnect}
-              className="block hover:bg-gray-200 py-2 pr-4 pl-2 w-full text-[#F05252] text-left"
+              className="block bg-[#F05252] py-1 p-2 w-full text-left text-white cursor-pointer"
             >
               Disconnect
-            </button>
+            </span>
           </PopoverContent>
         </Popover>
       ) : (
-        <Button disabled={connecting} onClick={connect}>
-          <WalletIcon className="mr-2 w-4 h-4" /> Connect Wallet
+        <Button disabled={loading} onClick={connect}>
+          <WalletIcon className="mr-2 w-4 h-4" />{" "}
+          {loading ? "Loading..." : "Connect Wallet"}
         </Button>
       )}
     </div>

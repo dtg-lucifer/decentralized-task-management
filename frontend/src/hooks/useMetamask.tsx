@@ -1,98 +1,98 @@
-"use client";
+import { ethers } from "ethers";
+import {
+  createContext,
+  PropsWithChildren,
+  useCallback,
+  useContext,
+  useState,
+} from "react";
 
-import React, { type PropsWithChildren } from "react";
-
-type ConnectAction = { type: "connect"; wallet: string; balance: string };
-type DisconnectAction = { type: "disconnect" };
-type PageLoadedAction = {
-  type: "pageLoaded";
-  isMetamaskInstalled: boolean;
-  wallet: string | null;
-  balance: string | null;
-};
-type LoadingAction = { type: "loading" };
-type IdleAction = { type: "idle" };
-
-type Action =
-  | ConnectAction
-  | DisconnectAction
-  | PageLoadedAction
-  | LoadingAction
-  | IdleAction;
-
-type Dispatch = (action: Action) => void;
-
-type Status = "loading" | "idle" | "pageNotLoaded";
-
-type State = {
-  wallet: string | null;
-  isMetamaskInstalled: boolean;
-  status: Status;
-  balance: string | null;
-};
-
-const initialState: State = {
-  wallet: null,
-  isMetamaskInstalled: false,
-  status: "loading",
-  balance: null,
-} as const;
-
-function metamaskReducer(state: State, action: Action): State {
-  switch (action.type) {
-    case "connect": {
-      const { wallet, balance } = action;
-      const newState = { ...state, wallet, balance, status: "idle" } as State;
-      const info = JSON.stringify(newState);
-      window.localStorage.setItem("metamaskState", info);
-
-      return newState;
-    }
-    case "disconnect": {
-      window.localStorage.removeItem("metamaskState");
-      if (typeof window.ethereum !== undefined) {
-        window.ethereum.removeAllListeners(["accountsChanged"]);
-      }
-      return { ...state, wallet: null, balance: null };
-    }
-    case "pageLoaded": {
-      const { isMetamaskInstalled, balance, wallet } = action;
-      return { ...state, isMetamaskInstalled, status: "idle", wallet, balance };
-    }
-    case "loading": {
-      return { ...state, status: "loading" };
-    }
-    case "idle": {
-      return { ...state, status: "idle" };
-    }
-
-    default: {
-      throw new Error("Unhandled action type");
-    }
-  }
+export interface AccountType {
+  address?: string;
+  balance?: string;
+  chainId?: string;
+  network?: string;
+  provider?: ethers.BrowserProvider;
 }
 
-const MetamaskContext = React.createContext<
-  { state: State; dispatch: Dispatch } | undefined
->(undefined);
+export interface MetaMaskContextType {
+  connect: () => Promise<void>;
+  disconnect: () => void;
+  account: AccountType | null;
+  error: string | null;
+  loading: boolean;
+  connected: boolean;
+}
 
-function MetamaskProvider({ children }: PropsWithChildren) {
-  const [state, dispatch] = React.useReducer(metamaskReducer, initialState);
-  const value = { state, dispatch };
+const MetaMaskContext = createContext<MetaMaskContextType | undefined>(
+  undefined
+);
+
+export const MetaMaskProvider = ({ children }: PropsWithChildren) => {
+  const [account, setAccount] = useState<AccountType | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [connected, setConnected] = useState<boolean>(false);
+
+  const connect = useCallback(async () => {
+    const eth = window.ethereum;
+
+    if (!eth) {
+      setError("MetaMask not found");
+      setConnected(false);
+      setLoading(false);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const accounts = await eth.request({ method: "eth_requestAccounts" });
+      const address = accounts[0];
+
+      const provider = new ethers.BrowserProvider(eth);
+      const balance = await provider.getBalance(address);
+      const network = await provider.getNetwork();
+
+      setAccount({
+        address,
+        provider,
+        balance: ethers.formatEther(balance),
+        chainId: network.chainId.toString(),
+        network: network.name,
+      });
+
+      setConnected(true);
+      setError(null);
+    } catch (err) {
+      setError((err as Error)?.message ?? "Failed to connect");
+      setConnected(false);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const disconnect = useCallback(() => {
+    window.ethereum?.removeAllListeners();
+    setAccount(null);
+    setConnected(false);
+    setLoading(false);
+  }, []);
 
   return (
-    <MetamaskContext.Provider value={value}>
+    <MetaMaskContext.Provider
+      value={{ connect, disconnect, account, error, loading, connected }}
+    >
       {children}
-    </MetamaskContext.Provider>
+    </MetaMaskContext.Provider>
   );
-}
+};
 
-function useMetamask() {
-  const context = React.useContext(MetamaskContext);
-  if (context === undefined) {
-    throw new Error("useMetamask must be used within a MetamaskProvider");
+export const useMetamask = (): MetaMaskContextType => {
+  const context = useContext(MetaMaskContext);
+
+  if (!context) {
+    throw new Error("useMetamask must be used within a MetaMaskProvider");
   }
-  return context;
-}
 
-export { MetamaskProvider, useMetamask };
+  return context;
+};
