@@ -2,11 +2,15 @@ import { SearchIcon } from "lucide-react";
 import { ThemeToggle } from "../theme/theme-switcher";
 import { Input } from "../ui/input";
 import { ConnectWalletButton } from "../wallet/connect-wallet";
-import { NavigationMenuDemo } from "./menu";
+
+// FIXME: make the search bar working
+// TODO: add quick links
+// TODO: add a logo
+// FIXME: make the navbar responsive
 
 export const Navbar = () => {
   return (
-    <nav className="top-0 z-10 sticky flex justify-between items-center gap-4 backdrop-blur-md p-4">
+    <nav className="top-0 z-10 sticky flex justify-between items-center gap-4 bg-[#f9f9f9] dark:bg-background backdrop-blur-md p-4">
       <h1
         style={{
           fontFamily: "accent_font_bold",
@@ -15,7 +19,7 @@ export const Navbar = () => {
       >
         Detaskify
       </h1>
-      <NavigationMenuDemo />
+      {/* quick links */}
       <div className="flex justify-around items-center border-gray-700 px-2 p-1 border rounded-full w-[20rem] focus-within:w-3/12 transition-all duration-500 group">
         <Input
           type="text"
