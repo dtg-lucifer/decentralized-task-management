@@ -11,6 +11,7 @@ contract TaskManagement {
         uint256 createdAt;
         uint256 updatedAt;
         bool done;
+        address creator;
     }
 
     mapping(uint256 => Task) public tasks;
@@ -35,7 +36,8 @@ contract TaskManagement {
             description: _description,
             createdAt: block.timestamp,
             updatedAt: block.timestamp,
-            done: false
+            done: false,
+            creator: msg.sender
         });
 
         emit TaskCreated(taskCounter, _title);

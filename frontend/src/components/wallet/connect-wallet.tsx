@@ -30,7 +30,7 @@ export const ConnectWalletButton = () => {
           >
             <div>
               <WalletAvatar address={account!.address!} size={25} />
-              <span className="bg-foreground hover:bg-transparent px-2 py-[0.4rem] rounded-md text-background hover:text-none select-none">
+              <span className="bg-foreground hover:bg-transparent px-2 py-[0.4rem] rounded-md font-bold text-background hover:text-none select-none">
                 {formatAddress(account?.address)}
               </span>
             </div>

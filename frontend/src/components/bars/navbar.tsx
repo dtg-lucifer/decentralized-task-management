@@ -10,10 +10,10 @@ import { ConnectWalletButton } from "../wallet/connect-wallet";
 
 export const Navbar = () => {
   return (
-    <nav className="top-0 z-10 sticky flex justify-between items-center gap-4 bg-[#f9f9f9] dark:bg-background backdrop-blur-md p-4">
+    <nav className="top-0 z-10 sticky flex justify-between items-center gap-4 backdrop-blur-md p-4">
       <h1
         style={{
-          fontFamily: "accent_font_bold",
+          fontFamily: "accent_font",
         }}
         className="font-bold text-3xl dark:text-[hsl(244,100%,90%)]"
       >
