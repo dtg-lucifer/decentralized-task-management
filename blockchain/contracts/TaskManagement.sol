@@ -54,6 +54,25 @@ contract TaskManagement {
     }
 
     /**
+     * @notice Retrieves all of the tasks created by a specific user
+     * @param _userId user id of whom created the task
+     * @return Array of tasks
+     */
+    function getAllTasksByUser(address _userId) public view returns (Task[] memory) {
+        Task[] memory userTasks = new Task[](taskCounter);
+        uint256 taskIndex = 0;
+
+        for (uint256 i = 1; i <= taskCounter; i++) {
+            if (tasks[i].creator == address(_userId)) {
+                userTasks[taskIndex] = tasks[i];
+                taskIndex++;
+            }
+        }
+
+        return userTasks;
+    }
+
+    /**
      * @notice Updates a task's details
      * @param _id The ID of the task to update
      * @param _title The new title of the task
@@ -85,6 +104,7 @@ contract TaskManagement {
         require(tasks[_id].id != 0, "Task does not exist");
 
         delete tasks[_id];
+        taskCounter--;
 
         emit TaskDeleted(_id);
     }
