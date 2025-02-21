@@ -1,7 +1,7 @@
 {
   "name": "hardhat-project",
   "scripts": {
-    "deploy": "npx hardhat ignition deploy ignition/modules/Apollo.ts --network localganache"
+    "deploy": "npx hardhat ignition deploy ignition/modules/TaskManagement.ts --network localganache --show-stack-traces"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-ignition-ethers": "^0.15.9",

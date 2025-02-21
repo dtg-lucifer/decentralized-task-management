@@ -30,12 +30,9 @@ export const ConnectWalletButton = () => {
           >
             <div>
               <WalletAvatar address={account!.address!} size={25} />
-              <Button
-                variant={"ghost"}
-                className="bg-foreground hover:bg-transparent text-background hover:text-none"
-              >
+              <span className="bg-foreground hover:bg-transparent px-2 py-[0.4rem] rounded-md font-bold text-background hover:text-none select-none">
                 {formatAddress(account?.address)}
-              </Button>
+              </span>
             </div>
           </PopoverTrigger>
           <PopoverContent className="top-10 right-0 z-10 shadow-lg mt-2 p-0 border rounded-md max-w-fit overflow-hidden">
