@@ -90,6 +90,62 @@
   {
     "inputs": [
       {
+        "internalType": "address",
+        "name": "_userId",
+        "type": "address"
+      }
+    ],
+    "name": "getAllTasksByUser",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "id",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "title",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "createdAt",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "updatedAt",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "done",
+            "type": "bool"
+          },
+          {
+            "internalType": "address",
+            "name": "creator",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct TaskManagement.Task[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "uint256",
         "name": "_id",
         "type": "uint256"
@@ -128,6 +184,11 @@
             "internalType": "bool",
             "name": "done",
             "type": "bool"
+          },
+          {
+            "internalType": "address",
+            "name": "creator",
+            "type": "address"
           }
         ],
         "internalType": "struct TaskManagement.Task",
@@ -190,6 +251,11 @@
         "internalType": "bool",
         "name": "done",
         "type": "bool"
+      },
+      {
+        "internalType": "address",
+        "name": "creator",
+        "type": "address"
       }
     ],
     "stateMutability": "view",
